@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "summary": "start making apps really easily",
+    "summary": "structure and run your apps really easily",
     "repository": "https://github.com/NoRedInk/start-app.git",
     "license": "BSD3",
     "source-directories": [
@@ -11,7 +11,7 @@
     ],
     "dependencies": {
         "elm-lang/core": "2.0.1 <= v < 4.0.0",
-        "evancz/elm-effects": "2.0.0 <= v < 3.0.0",
+        "evancz/elm-effects": "2.0.0 <= v < 3.0.0"
     },
     "elm-version": "0.15.0 <= v < 0.17.0"
 }
