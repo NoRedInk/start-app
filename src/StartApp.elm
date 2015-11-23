@@ -14,7 +14,6 @@ works!**
 
 -}
 
-import Html exposing (Html)
 import Task
 import Effects exposing (Effects, Never)
 
@@ -25,8 +24,7 @@ that you see in every Elm program.
 The `init` transaction will give you an initial model and create any tasks that
 are needed on start up.
 
-The `update` and `view` fields describe how to step the model and view the
-model.
+The `update` describe how to step over the model based on requests coming in
 
 The `inputs` field is for any external signals you might need. If you need to
 get values from JavaScript, they will come in through a port as a signal which
@@ -35,15 +33,11 @@ you can pipe into your app as one of the `inputs`.
 type alias Config model action =
     { init : (model, Effects action)
     , update : action -> model -> (model, Effects action)
-    , view : Signal.Address action -> model -> Html
     , inputs : List (Signal.Signal action)
     }
 
 
 {-| An `App` is made up of a couple signals:
-
-  * `html` &mdash; a signal of `Html` representing the current visual
-    representation of your app. This should be fed into `main`.
 
   * `model` &mdash; a signal representing the current model. Generally you
     will not need this one, but it is there just in case. You will know if you
@@ -54,8 +48,7 @@ type alias Config model action =
     be hooked up to a `port` to ensure they get run.
 -}
 type alias App model =
-    { html : Signal Html
-    , model : Signal model
+    { model : Signal model
     , tasks : Signal (Task.Task Never ())
     }
 
@@ -64,16 +57,13 @@ type alias App model =
 `App`. It should pretty much always look like this:
 
     app =
-        start { init = init, view = view, update = update, inputs = [] }
-
-    main =
-        app.html
+        start { init = init, update = update, inputs = [] }
 
     port tasks : Signal (Task.Task Never ())
     port tasks =
         app.tasks
 
-So once we start the `App` we feed the HTML into `main` and feed the resulting
+So once we start the `App` we feed the resulting
 tasks into a `port` that will run them all.
 -}
 start : Config model action -> App model
@@ -111,7 +101,6 @@ start config =
         model =
             Signal.map fst effectsAndModel
     in
-        { html = Signal.map (config.view address) model
-        , model = model
+        { model = model
         , tasks = Signal.map (Effects.toTask messages.address << snd) effectsAndModel
         }
