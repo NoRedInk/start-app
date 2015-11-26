@@ -47,9 +47,10 @@ type alias Config model action =
     to be producing tasks in response to all sorts of events, so this needs to
     be hooked up to a `port` to ensure they get run.
 -}
-type alias App model =
+type alias App model action =
     { model : Signal model
     , tasks : Signal (Task.Task Never ())
+    , address : Signal.Address action
     }
 
 
@@ -66,7 +67,7 @@ type alias App model =
 So once we start the `App` we feed the resulting
 tasks into a `port` that will run them all.
 -}
-start : Config model action -> App model
+start : Config model action -> App model action
 start config =
     let
         singleton action = [ action ]
@@ -103,4 +104,5 @@ start config =
     in
         { model = model
         , tasks = Signal.map (Effects.toTask messages.address << snd) effectsAndModel
+        , address = address
         }
